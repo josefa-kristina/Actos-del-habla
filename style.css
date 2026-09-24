@@ -1,5 +1,5 @@
 :root {
-  --bg: #c6bbee;
+  --bg: #0c0a13;
   --bg-panel: #14111f;
   --border: #2a2438;
   --text: #f1ecf7;
@@ -62,113 +62,68 @@ video { display: none; }
   padding: 36px 24px 32px;
 }
 
-.btn-wrapper {
-  --width: 152px;
-  --height: 56px;
-  --padding: 6px;
-  --border-radius: 28px;
-  --dot-size: 11px;
-  --btn-color: #17141f;
-  --hue: 18deg;
-  --animation-duration: 1.2s;
-
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--width);
-  height: var(--height);
-  border-radius: var(--border-radius);
-  border: none;
-  background-color: #00000008;
-  box-shadow:
-    1px 1px 2px 0 #ffffff22,
-    2px 2px 2px #0004 inset,
-    2px 2px 4px #0004 inset,
-    2px 2px 8px #0004 inset;
-  transition: box-shadow 50ms linear;
-  user-select: none;
-  z-index: 1;
+/* Switch by MuhammadHasann — https://uiverse.io/MuhammadHasann/popular-seahorse-73
+   (tamaño y colores ajustados a la paleta del proyecto) */
+.toggle-cont {
+  width: 100px;
+  height: 50px;
+  border-radius: 9999px;
 }
 
-.btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
-  width: calc(100% - 2 * var(--padding));
-  height: calc(100% - 2 * var(--padding));
-  border-radius: calc(var(--border-radius) - var(--padding));
-  border: none;
+.toggle-cont .toggle-input {
+  display: none;
+}
+
+.toggle-cont .toggle-label {
   cursor: pointer;
-  background: linear-gradient(#ffffff14, #00000026), var(--btn-color);
-  box-shadow:
-    1px 1px 2px -1px #ffffff30 inset,
-    0 2px 1px #00000020,
-    0 4px 2px #00000020,
-    0 8px 4px #00000020;
-  transition:
-    transform 0.25s cubic-bezier(0.25, 1.5, 0.5, 2.2),
-    box-shadow 0.25s ease,
-    filter 0.3s ease;
-  will-change: transform;
-  z-index: 2;
-}
-
-.btn-txt {
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text);
-}
-
-.dot {
-  flex: none;
-  width: var(--dot-size);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background-color: hsla(var(--hue), 0%, 50%, 0.15);
-  border: 1px solid hsla(var(--hue), 0%, 60%, 0.6);
   position: relative;
+  display: inline-block;
+  padding: 6px;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  box-sizing: content-box;
+  box-shadow: 0px 0px 16px -8px #fefefe;
 }
 
-.dot::after {
-  content: "";
+.toggle-cont .toggle-label .cont-label-play {
+  position: relative;
+  width: 50px;
+  aspect-ratio: 1 / 1;
+  background: #5e5e5e;
+  border-radius: 9999px;
+  transition: all 0.5s cubic-bezier(1, 0, 0, 1);
+}
+
+.toggle-cont .toggle-input:checked + .toggle-label .cont-label-play {
+  background: #a78bfa;
+  transform: translateX(50px);
+}
+
+.toggle-cont .toggle-label .label-play {
   position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  box-shadow:
-    0 0 10px 2px hsla(var(--hue), 80%, 55%, 0.35),
-    0 0 22px 8px hsla(var(--hue), 80%, 55%, 0.35);
-  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  width: 24px;
+  aspect-ratio: 1 / 1;
+  background: #fefefe;
+  border-radius: 4px;
+  clip-path: polygon(25% 0, 75% 50%, 25% 100%, 25% 51%);
+  transition: all 0.5s cubic-bezier(1, 0, 0, 1);
 }
 
-@keyframes dot-pulse-bg {
-  0%, 100% { background-color: hsla(var(--hue), 50%, 50%, 0); }
-  50%       { background-color: hsla(var(--hue), 100%, 55%, 1); }
-}
-@keyframes dot-pulse-glow {
-  0%, 100% { opacity: 0; }
-  50%       { opacity: 1; }
+.toggle-cont .toggle-input:checked + .toggle-label .label-play {
+  width: 20px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.btn:hover .dot {
-  background-color: hsla(var(--hue), 100%, 55%, 1);
-  border-color: hsla(var(--hue), 100%, 60%, 0.9);
-}
-.btn:hover { transform: translate3d(0, 0, 2px); }
-.btn:active { transform: translate3d(0, 0, -3px); }
-.btn:focus-visible { outline: 2px dashed hsla(var(--hue), 70%, 50%, 0.8); outline-offset: 3px; }
-.btn:disabled { cursor: default; }
-
-.btn-wrapper.is-live .dot {
-  background-color: hsla(var(--hue), 100%, 55%, 1);
-  border-color: hsla(var(--hue), 100%, 60%, 0.9);
-  animation: dot-pulse-bg var(--animation-duration) ease-in-out infinite;
-}
-.btn-wrapper.is-live .dot::after {
-  animation: dot-pulse-glow var(--animation-duration) ease-in-out infinite;
+.toggle-cont .toggle-input:disabled + .toggle-label {
+  cursor: default;
+  opacity: 0.75;
 }
 
 .status {

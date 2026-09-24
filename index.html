@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Señas y Sonidos — DPPI 2026</title>
+  <title>Actos del habla — DPPI 2026</title>
   <meta name="description" content="Una cámara. Dos sistemas. Las señas se vuelven sonido; las palabras detrás del gesto se vuelven color.">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,19 +11,22 @@
 
 <header class="site-header">
   <p class="eyebrow">EJERCICIO_03</p>
-  <h1>Señas y Sonidos</h1>
+  <h1>Actos del habla</h1>
   <p class="lede">Una misma cámara. Dos sistemas de interpretación distintos. Uno escucha el gesto y lo convierte en sonido; el otro lee la palabra detrás del gesto y la convierte en color.</p>
 </header>
 
 <main>
 
   <section class="controls">
-    <div class="btn-wrapper" id="cameraBtnWrapper">
-      <button class="btn" id="startBtn" type="button">
-        <span class="btn-txt">Cámara</span>
-        <div class="dot" id="cameraDot"></div>
-      </button>
+<!-- From Uiverse.io by MuhammadHasann --> 
+<div class="toggle-cont">
+  <input class="toggle-input" id="toggle" name="toggle" type="checkbox" />
+  <label class="toggle-label" for="toggle">
+    <div class="cont-label-play">
+      <span class="label-play"></span>
     </div>
+  </label>
+</div>
     <p id="statusMsg" class="status" role="status" aria-live="polite">La cámara aún no está activa.</p>
   </section>
 
