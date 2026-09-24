@@ -64,17 +64,17 @@ video { display: none; }
 
 /* Switch by MuhammadHasann — https://uiverse.io/MuhammadHasann/popular-seahorse-73
    (tamaño y colores ajustados a la paleta del proyecto) */
-.toggle-cont {
+.toggleCont {
   width: 100px;
   height: 50px;
   border-radius: 9999px;
 }
 
-.toggle-cont .toggle-input {
+.toggleCont .toggle-input {
   display: none;
 }
 
-.toggle-cont .toggle-label {
+.toggleCont .toggle-label {
   cursor: pointer;
   position: relative;
   display: inline-block;
@@ -88,7 +88,7 @@ video { display: none; }
   box-shadow: 0px 0px 16px -8px #fefefe;
 }
 
-.toggle-cont .toggle-label .cont-label-play {
+.toggleCont .toggle-label .cont-label-play {
   position: relative;
   width: 50px;
   aspect-ratio: 1 / 1;
@@ -97,12 +97,12 @@ video { display: none; }
   transition: all 0.5s cubic-bezier(1, 0, 0, 1);
 }
 
-.toggle-cont .toggle-input:checked + .toggle-label .cont-label-play {
+.toggleCont .toggle-input:checked + .toggle-label .cont-label-play {
   background: #a78bfa;
   transform: translateX(50px);
 }
 
-.toggle-cont .toggle-label .label-play {
+.toggleCont .toggle-label .label-play {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -116,12 +116,12 @@ video { display: none; }
   transition: all 0.5s cubic-bezier(1, 0, 0, 1);
 }
 
-.toggle-cont .toggle-input:checked + .toggle-label .label-play {
+.toggleCont .toggle-input:checked + .toggle-label .label-play {
   width: 20px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.toggle-cont .toggle-input:disabled + .toggle-label {
+.toggleCont .toggle-input:disabled + .toggle-label {
   cursor: default;
   opacity: 0.75;
 }

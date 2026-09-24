@@ -76,7 +76,7 @@ const offCanvas    = document.getElementById("hiddenSample");
 const offCtx       = offCanvas.getContext("2d", { willReadFrequently: true });
 
 const startBtn          = document.getElementById("startBtn");
-const cameraBtnWrapper  = document.getElementById("cameraBtnWrapper");
+const toggleCont = document.getElementById("toggleCont");
 const statusMsg         = document.getElementById("statusMsg");
 const idleHintA         = document.getElementById("idleHintA");
 const idleHintB         = document.getElementById("idleHintB");
@@ -131,7 +131,7 @@ async function start() {
   // Ambos sistemas arrancan apenas hay cámara.
   // Si el modelo de MediaPipe demora, el Sistema B sigue funcionando.
   running = true;
-  cameraBtnWrapper.classList.add("is-live");
+  toggleCont.classList.add("is-live");
   requestAnimationFrame(renderLoop);
 
   setStatus("Cámara activa. Cargando modelo de manos…");
