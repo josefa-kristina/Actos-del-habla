@@ -75,8 +75,9 @@ const ctxB         = canvasB.getContext("2d");
 const offCanvas    = document.getElementById("hiddenSample");
 const offCtx       = offCanvas.getContext("2d", { willReadFrequently: true });
 
-const startBtn          = document.getElementById("startBtn");
-const toggleCont = document.getElementById("toggleCont");
+// El switch del HTML es un checkbox con id="toggle" (antes se buscaban ids
+// que no existían, y el script moría al cargar con un TypeError).
+const toggle            = document.getElementById("toggle");
 const statusMsg         = document.getElementById("statusMsg");
 const idleHintA         = document.getElementById("idleHintA");
 const idleHintB         = document.getElementById("idleHintB");
@@ -92,6 +93,8 @@ let audioCtx        = null;
 let reverbNode      = null;
 let running         = false;
 let lastVideoTime   = -1;
+let stream          = null;     // MediaStream activo, para poder apagar la cámara
+let rafId           = null;     // id del requestAnimationFrame, para no duplicar loops
 
 // Detección estable de gestos
 let gestureBuffer    = [];
@@ -108,15 +111,24 @@ let displayedSat = 0;
 // Arranque
 // ---------------------------------------------------------------------------
 
-startBtn.addEventListener("click", start);
+// El checkbox cambia de estado al hacer clic: checked = encender, unchecked = apagar
+toggle.addEventListener("change", () => {
+  if (toggle.checked) start();
+  else stop();
+});
 
 async function start() {
-  startBtn.disabled = true;
+  // Mientras se pide permiso/carga el modelo, bloqueamos el switch para evitar doble clic
+  toggle.disabled = true;
 
-  // AudioContext debe crearse dentro de un handler de usuario
-  audioCtx  = new (window.AudioContext || window.webkitAudioContext)();
-  reverbNode = buildReverb(audioCtx);
-  reverbNode.connect(audioCtx.destination);
+  // AudioContext debe crearse dentro de un handler de usuario.
+  // Se crea una sola vez y se reutiliza al reencender.
+  if (!audioCtx) {
+    audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
+    reverbNode = buildReverb(audioCtx);
+    reverbNode.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === "suspended") audioCtx.resume();
 
   setStatus("Solicitando acceso a la cámara…");
   try {
@@ -124,15 +136,23 @@ async function start() {
   } catch (err) {
     console.error(err);
     setStatus("No se pudo acceder a la cámara: " + (err?.message ?? "revisa los permisos e intentá de nuevo."));
-    startBtn.disabled = false;
+    // Si falló, el switch vuelve a "apagado" para que refleje la realidad
+    toggle.checked  = false;
+    toggle.disabled = false;
     return;
   }
 
   // Ambos sistemas arrancan apenas hay cámara.
   // Si el modelo de MediaPipe demora, el Sistema B sigue funcionando.
   running = true;
-  toggleCont.classList.add("is-live");
-  requestAnimationFrame(renderLoop);
+  toggle.disabled = false; // ya se puede apagar
+  rafId = requestAnimationFrame(renderLoop);
+
+  // El modelo se descarga una sola vez; al reencender se reutiliza
+  if (handLandmarker) {
+    setStatus("Listo. Mostrá una seña frente a la cámara.");
+    return;
+  }
 
   setStatus("Cámara activa. Cargando modelo de manos…");
   try {
@@ -145,22 +165,52 @@ async function start() {
   }
 }
 
+function stop() {
+  running = false;
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = null;
+
+  // Soltar la cámara de verdad (si no, la luz del navegador queda prendida)
+  stream?.getTracks().forEach((track) => track.stop());
+  stream = null;
+  video.srcObject = null;
+
+  // Reiniciar estado de detección para que al reencender no quede un gesto "fantasma"
+  gestureBuffer     = [];
+  currentGesture    = null;
+  lastPlayedGesture = null;
+  soundCooldown     = 0;
+  lastVideoTime     = -1;
+  displayedHue      = null;
+  displayedSat      = 0;
+
+  // Limpiar los canvas y volver a los textos iniciales
+  [ctxA, ctxB].forEach((ctx) => ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height));
+  idleHintA.style.opacity = "1";
+  idleHintB.style.opacity = "1";
+  statA.textContent = "sin datos";
+  statB.textContent = "sin datos";
+  setStatus("La cámara aún no está activa.");
+}
+
 function setStatus(text) {
   statusMsg.textContent = text;
 }
 
 async function initCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({
+  stream = await navigator.mediaDevices.getUserMedia({
     video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" },
     audio: false,
   });
   video.srcObject = stream;
-  await video.play();
 
+  // Esperamos a tener metadata (videoWidth/Height) antes de reproducir,
+  // porque los canvas se dimensionan con esas medidas
   await new Promise((resolve) => {
-    if (video.readyState >= 2) return resolve();
+    if (video.readyState >= 1) return resolve();
     video.onloadedmetadata = () => resolve();
   });
+  await video.play();
 
   const w = video.videoWidth  || 640;
   const h = video.videoHeight || 480;
@@ -227,7 +277,7 @@ function renderLoop(tsMs) {
     drawSystemB();
   }
 
-  requestAnimationFrame(renderLoop);
+  rafId = requestAnimationFrame(renderLoop);
 }
 
 // ---------------------------------------------------------------------------
