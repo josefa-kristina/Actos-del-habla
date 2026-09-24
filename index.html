@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dos realidades — Visión artificial</title>
-<meta name="description" content="Una misma cámara, dos sistemas de visión artificial construyendo representaciones distintas de la misma escena.">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Señas y Sonidos — DPPI 2026</title>
+  <meta name="description" content="Una cámara. Dos sistemas. Las señas se vuelven sonido; las palabras detrás del gesto se vuelven color.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="site-header">
-  <p class="eyebrow">EJERCICIO_02</p>
-  <h1>Dos realidades, todas las realidades</h1>
-  <p class="lede">Una misma cámara observa la escena. Dos sistemas de visión artificial la interpretan de maneras distintas, en tiempo real.</p>
+  <p class="eyebrow">EJERCICIO_03</p>
+  <h1>Señas y Sonidos</h1>
+  <p class="lede">Una misma cámara. Dos sistemas de interpretación distintos. Uno escucha el gesto y lo convierte en sonido; el otro lee la palabra detrás del gesto y la convierte en color.</p>
 </header>
 
 <main>
@@ -21,67 +21,59 @@
     <div class="btn-wrapper" id="cameraBtnWrapper">
       <button class="btn" id="startBtn" type="button">
         <span class="btn-txt">Cámara</span>
-        <div class="dot pulse" id="cameraDot"></div>
+        <div class="dot" id="cameraDot"></div>
       </button>
     </div>
     <p id="statusMsg" class="status" role="status" aria-live="polite">La cámara aún no está activa.</p>
   </section>
 
+  <section class="legend" aria-label="Leyenda de señas">
+    <ul class="gesture-list">
+      <li><span class="g-icon">🖐️</span><span class="g-word" style="--c:#5ce1ff">Apertura</span><span class="g-intent">calma</span></li>
+      <li><span class="g-icon">✊</span><span class="g-word" style="--c:#ff3a3a">Tensión</span><span class="g-intent">fuerza</span></li>
+      <li><span class="g-icon">✌️</span><span class="g-word" style="--c:#4ade80">Dualidad</span><span class="g-intent">equilibrio</span></li>
+      <li><span class="g-icon">☝️</span><span class="g-word" style="--c:#ffd166">Nombrar</span><span class="g-intent">foco</span></li>
+      <li><span class="g-icon">👍</span><span class="g-word" style="--c:#ff8a5c">Afirmación</span><span class="g-intent">positividad</span></li>
+      <li><span class="g-icon">🤏</span><span class="g-word" style="--c:#a78bfa">Retener</span><span class="g-intent">concentración</span></li>
+    </ul>
+  </section>
+
   <section class="stage" id="stage">
     <article class="panel" id="panelA">
-      <div class="panel-head">
-        <h2>Sistema A — Visión Corporal</h2>
-      </div>
+      <div class="panel-head"><h2>Sistema A — Seña → Sonido</h2></div>
       <div class="canvas-wrap">
         <canvas id="canvasA" width="640" height="480"></canvas>
-        <p class="idle-hint" id="idleHintA">esperando cuerpo…</p>
+        <p class="idle-hint" id="idleHintA">mostrá una mano…</p>
       </div>
-      <p class="caption">MediaPipe · <span id="statA">sin datos</span></p>
+      <p class="caption">MediaPipe Hands · <span id="statA">sin datos</span></p>
     </article>
 
     <article class="panel" id="panelB">
-      <div class="panel-head">
-        <h2>Sistema B — Movimiento</h2>
-      </div>
+      <div class="panel-head"><h2>Sistema B — Palabra → Color</h2></div>
       <div class="canvas-wrap">
         <canvas id="canvasB" width="640" height="480"></canvas>
+        <p class="idle-hint" id="idleHintB">esperando seña…</p>
       </div>
-      <p class="caption">Diferencia de frames · <span id="statB">sin datos</span></p>
+      <p class="caption">Campo semántico · <span id="statB">sin datos</span></p>
     </article>
   </section>
 
   <section class="reflection-section">
     <h2>Reflexión</h2>
-    <p>
-      Frente a la cámara ocurre una sola escena, pero cada sistema encuentra algo distinto en ella. Uno reconoce
-      un cuerpo a través de puntos y relaciones; el otro simplemente observa dónde algo cambia. Ninguno está
-      equivocado, pero ninguno puede verlo todo.
-    </p>
-    <p>
-      Merleau-Ponty planteaba que nuestra percepción está ligada a las posibilidades y límites de nuestro cuerpo.
-      Con las máquinas ocurre algo parecido: aquello que pueden percibir depende de cómo fueron construidas y de
-      qué les enseñamos a buscar.
-    </p>
-    <p>
-      Kosuth, por otro lado, nos permite recordar que una representación nunca es aquello que representa. Los
-      puntos, las líneas y las huellas de movimiento hablan de una persona, pero no son esa persona.
-    </p>
-    <p>
-      Tal vez lo interesante de construir una máquina que observa no sea preguntarnos cuánto puede ver, sino
-      comenzar a reconocer todo aquello que, inevitablemente, deja fuera.
-    </p>
+    <p>Una sola escena, dos lecturas. El Sistema A pregunta por el gesto: ¿qué forma adopta la mano? No muestra la mano tal cual, sino los puntos y relaciones que la definen. Cuando reconoce una seña con certeza, emite un sonido: el gesto se vuelve audible.</p>
+    <p>El Sistema B no sabe de manos. Recibe una palabra — la que el Sistema A le asigna al gesto — y la interpreta como intención. Cada palabra carga una orientación semántica, y esa orientación se traduce en un color que tiñe la escena completa.</p>
+    <p>Austin nos recuerda que el lenguaje no solo describe: también <em>hace</em>. La palma abierta no representa apertura — la realiza. El puño no señala tensión — la ejerce. El Sistema B intenta hacer visible esa dimensión ilocutiva: la intención que el gesto porta más allá de su forma.</p>
+    <p>Pero el color no es la palabra, y la palabra no es el gesto. Cada representación es una traducción, y en cada traducción algo se pierde — y algo nuevo aparece.</p>
   </section>
 
 </main>
 
 <footer class="site-footer">
-  <p>Código fuente: <a id="repoLink" href="https://github.com/fefeliperoar/dos-realidades" target="_blank" rel="noopener">repositorio en GitHub</a></p>
-  <p class="credit">Felipe Roa R. - Ejercicio 02 - DPPI 2026 - Escuela de Diseño UDP</p>
+  <p class="credit">Josefa Araya Cartes · Ejercicio 03 · DPPI 2026 · Escuela de Diseño UDP</p>
 </footer>
 
 <video id="video" playsinline autoplay muted></video>
-<canvas id="hiddenSample" width="48" height="36"></canvas>
-
+<canvas id="hiddenSample" width="40" height="30"></canvas>
 <script type="module" src="script.js"></script>
 </body>
 </html>
