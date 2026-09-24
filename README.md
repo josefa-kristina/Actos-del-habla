@@ -1,17 +1,27 @@
-# Dos realidades
+# Actos del habla
 
-Ejercicio 02 del curso (DPPI 2026), sobre visión artificial y representación. La idea era tomar una sola cámara y usarla para armar dos maneras completamente distintas de "ver" lo mismo.
-
-**Demo:** https://fefeliperoar.github.io/dos-realidades/
-**Repo:** https://github.com/fefeliperoar/dos-realidades
+Ejercicio 03 del curso (DPPI 2026), sobre gesto, sonido y color. La idea es tomar una sola cámara y una sola mano, y usarlas para armar dos maneras completamente distintas de traducir lo mismo: una lo vuelve sonido, la otra lo vuelve color.
 
 ## De qué se trata
 
-Hay dos sistemas corriendo al mismo tiempo, con la misma cámara. Ninguno de los dos muestra la imagen de la cámara tal cual — cada uno se queda solo con el dato que le importa y lo dibuja a su manera. Por eso terminan pareciendo dos cosas distintas aunque estén mirando lo mismo.
+Hay dos sistemas corriendo al mismo tiempo, alimentados por la misma detección de mano. Ninguno de los dos muestra la imagen de la cámara tal cual — cada uno se queda solo con el dato que le importa y lo traduce a su manera.
 
-**Sistema A — Visión Corporal.** Usa MediaPipe para encontrar los puntos del cuerpo de la persona (hombros, codos, caderas, rodillas, etc.) en cada frame. En vez de mostrar esos puntos tal cual, se dibujan conectados por líneas curvas que se mueven levemente solas, como si fueran un tejido vivo en lugar de un esqueleto rígido. Cada zona del cuerpo (cabeza, torso, brazos, piernas) tiene su propio color, y los puntos se ven más grandes o más chicos según qué tan segura está la detección y qué tan cerca está esa parte del cuerpo de la cámara. Si no hay nadie en cuadro, en el centro aparecen unos anillos suaves pulsando, como si el sistema estuviera "buscando" un cuerpo.
+**Sistema A — Seña → Sonido.** Usa MediaPipe Hands para encontrar los 21 puntos de la mano en cada frame y reconocer una seña entre seis posibles (ver tabla abajo). En vez de mostrar la mano tal cual, se dibuja una constelación de nodos y curvas orgánicas que respira levemente sola. Cuando una seña se sostiene el tiempo suficiente para confirmarse, dos cosas ocurren a la vez: la constelación se tiñe del color asociado a esa seña y suena una nota sintetizada (Web Audio API, sin samples externos) que le es propia. La seña se vuelve audible.
 
-**Sistema B — Movimiento.** Este no reconoce cuerpos ni nada en particular: solo compara cada frame con el anterior y se fija dónde cambió el brillo de la imagen. Donde detecta un cambio, nacen partículas — mientras más brusco fue el cambio, más partículas aparecen, más rápido se mueven y más grandes son. El color también cuenta algo: los cambios suaves se ven en tonos azules/violetas y los cambios bruscos en tonos naranjos. Las partículas se van apagando solas con el tiempo y dejan una especie de estela, en vez de desaparecer de golpe.
+**Sistema B — Palabra → Color.** No reconoce dedos ni gestos: recibe la palabra que el Sistema A ya identificó y la trata como una intención semántica, no como una forma. Muestrea el video en una grilla de puntos cuyo tamaño depende del brillo de cada zona; sin ninguna seña reconocida, esos puntos aparecen desaturados — la escena "no dice nada". En cuanto hay una seña estable, el campo completo de puntos vira al color que le corresponde a la intención de esa palabra, con una transición suave de matiz y saturación.
+
+## Gestos reconocidos
+
+| Seña | Palabra | Intención | Color | Sonido |
+|---|---|---|---|---|
+| 🖐️ Palma abierta | Apertura | calma | `#5ce1ff` | sinusoide suave y sostenida (C4) |
+| ✊ Puño cerrado | Tensión | fuerza | `#ff3a3a` | pulso cuadrado grave y corto (A2) |
+| ✌️ Índice + medio | Dualidad | equilibrio | `#4ade80` | dos senos en tercera mayor (C4+E4) |
+| ☝️ Solo índice | Nombrar | foco | `#ffd166` | ping agudo y breve (G5) |
+| 👍 Pulgar arriba | Afirmación | positividad | `#ff8a5c` | arpegio ascendente (C4→E4→G4) |
+| 🤏 Pellizco pulgar-índice | Retener | concentración | `#a78bfa` | tono con vibrato (A4, LFO 5 Hz) |
+
+Una seña solo se confirma — y solo entonces dispara sonido y color — después de mantenerse estable durante varios frames seguidos, para evitar destellos por detecciones ruidosas.
 
 ## Cómo probarlo
 
@@ -21,21 +31,18 @@ El `index.html` no se puede abrir directo con doble clic porque el script usa m�
 python3 -m http.server 8000
 ```
 
-y entrar a `http://localhost:8000`. Va a pedir permiso de cámara — hay que aceptarlo y apretar el botón "Cámara".
+y entrar a `http://localhost:8000`. Va a pedir permiso de cámara y, al activar el audio, permiso implícito del navegador para reproducir sonido (se habilita con el primer clic en el botón "Cámara").
 
 ## Reflexión
 
-Frente a la cámara ocurre una sola escena, pero cada sistema encuentra algo distinto en ella. Uno reconoce un cuerpo a través de puntos y relaciones; el otro simplemente observa dónde algo cambia. Ninguno está equivocado, pero ninguno puede verlo todo.
+Una sola escena, dos lecturas. El Sistema A pregunta por el gesto: ¿qué forma adopta la mano? No muestra la mano tal cual, sino los puntos y relaciones que la definen. Cuando reconoce una seña con certeza, emite un sonido: el gesto se vuelve audible.
 
-Merleau-Ponty planteaba que nuestra percepción está ligada a las posibilidades y límites de nuestro cuerpo. Con las máquinas ocurre algo parecido: aquello que pueden percibir depende de cómo fueron construidas y de qué les enseñamos a buscar.
+El Sistema B no sabe de manos. Recibe una palabra — la que el Sistema A le asigna al gesto — y la interpreta como intención. Cada palabra carga una orientación semántica, y esa orientación se traduce en un color que tiñe la escena completa.
 
-Kosuth, por otro lado, nos permite recordar que una representación nunca es aquello que representa. Los puntos, las líneas y las huellas de movimiento hablan de una persona, pero no son esa persona.
+Austin nos recuerda que el lenguaje no solo describe: también *hace*. La palma abierta no representa apertura — la realiza. El puño no señala tensión — la ejerce. El Sistema B intenta hacer visible esa dimensión ilocutiva: la intención que el gesto porta más allá de su forma.
 
-Tal vez lo interesante de construir una máquina que observa no sea preguntarnos cuánto puede ver, sino comenzar a reconocer todo aquello que, inevitablemente, deja fuera.
+Pero el color no es la palabra, y la palabra no es el gesto. Cada representación es una traducción, y en cada traducción algo se pierde — y algo nuevo aparece.
 
 ## Tecnologías
 
-MediaPipe Pose Landmarker (cargado desde CDN) y Canvas 2D con JavaScript puro, sin frameworks ni build.
-
----
-Felipe · Ejercicio 02 — Dos realidades · DPPI 2026
+MediaPipe Hand Landmarker (cargado desde CDN), Web Audio API para la síntesis de sonido (osciladores con envolvente y un reverb por convolución construido en código, sin samples externos) y Canvas 2D con JavaScript puro, sin frameworks ni build.
